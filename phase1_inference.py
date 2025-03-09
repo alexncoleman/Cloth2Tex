@@ -448,4 +448,4 @@ if __name__ == '__main__':
     parser.add_argument('--steps_two', help = 'optimizer 2 steps', type = int, default = 1001)
     args = parser.parse_args()
     print(args)
-    main(args.g, args.d, args.s, args.id args.steps_one, args.steps_two)
+    main(args.g, args.d, args.s, args.id, args.steps_one, args.steps_two)
