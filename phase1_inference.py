@@ -268,6 +268,7 @@ class Trainer(object):
 def main(category,
          savedir,
          scale,
+         id, 
          steps_one,
          steps_two):
     img_transform = transforms.ToTensor()
@@ -351,16 +352,18 @@ def main(category,
         if os.path.exists("template/reference/{0}/square/{1}_1.jpg".format(category, idx)) is False:
             continue
         
-        ref_img = cv2.imread("template/reference/{0}/bg/{1}_1.jpg".format(category, idx))
-        ref_img_back = cv2.imread("template/reference/{0}/bg/{1}_2.jpg".format(category, idx))
+
+        # Read in front and back images
+        ref_img = cv2.imread("inputs/front_{0}.jpg".format(id))
+        ref_img_back = cv2.imread("inputs/back_{0}.jpg".format(id))
 
         H, W = ref_img.shape[:2]
         H1, W1 = ref_img_back.shape[:2]
 
-        with open("template/reference/{0}/square/{1}_1.json".format(category, idx)) as f:
+        with open("inputs/kpfront_{0}.json".format(category, idx)) as f:
             result_kp1=json.load(f)
 
-        with open("template/reference/{0}/square/{1}_2.json".format(category, idx)) as f:
+        with open("inputs/kpback_{0}.json".format(id)) as f:
             result_kp2=json.load(f)
 
         std_lst = landmark_order_dict[category].copy()
@@ -412,8 +415,8 @@ def main(category,
 
         c_src_front, c_src_back = torch.from_numpy(c_src_front).unsqueeze(0), torch.from_numpy(c_src_back).unsqueeze(0)
 
-        mask_front = cv2.imread("template/reference/{0}/mask/{1}_1.jpg".format(category, idx), 0)
-        mask_back = cv2.imread("template/reference/{0}/mask/{1}_2.jpg".format(category, idx), 0)
+        mask_front = cv2.imread("inputs/maskfront_{0}.jpg".format(id), 0)
+        mask_back = cv2.imread("inputs/maskback_{0}.jpg".format(id), 0)
         mask_front, mask_back = np.where(mask_front > 10, 255, 0), np.where(mask_back > 10, 255, 0)
         mask_front, mask_back = img_transform(mask_front).unsqueeze(0), img_transform(mask_back).unsqueeze(0)
         mask_front, mask_back = mask_front / 255., mask_back / 255.
@@ -440,6 +443,7 @@ if __name__ == '__main__':
     parser.add_argument('--g', '--garment', help = 'garment type: 1_wy, 2_Polo, 3_Tshirt, 4_shorts, 5_trousers, 6_zipup, 7_windcoat, 9_jacket, 11_skirt', type = str, default = "1_wy")
     parser.add_argument('--d', '--dstdir', help = 'dst dir', type = str, default = "{}".format(datetime.date.today().strftime("%Y-%m-%d")))
     parser.add_argument('--s', '--scale', help = 'scale coefficient', type = float, default = 1.0)
+    parser.add_argument('--id', '--ID', help = 'ID code', type = float, default = 1)
     parser.add_argument('--steps_one', help = 'optimizer 1 steps', type = int, default = 501)
     parser.add_argument('--steps_two', help = 'optimizer 2 steps', type = int, default = 1001)
     args = parser.parse_args()
