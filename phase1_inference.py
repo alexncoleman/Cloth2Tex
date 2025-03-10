@@ -354,16 +354,17 @@ def main(category,
         
 
         # Read in front and back images
-        ref_img = cv2.imread("inputs/front_{0}.jpg".format(id))
-        ref_img_back = cv2.imread("inputs/back_{0}.jpg".format(id))
+        ref_img = cv2.imread("inputs/front_{0}.jpg".format(int(id)))
+        # print(ref_img)
+        ref_img_back = cv2.imread("inputs/back_{0}.jpg".format(int(id)))
 
         H, W = ref_img.shape[:2]
         H1, W1 = ref_img_back.shape[:2]
 
-        with open("inputs/kpfront_{0}.json".format(category, idx)) as f:
+        with open("inputs/kpfront_{0}.json".format(int(id))) as f:
             result_kp1=json.load(f)
 
-        with open("inputs/kpback_{0}.json".format(id)) as f:
+        with open("inputs/kpback_{0}.json".format(int(id))) as f:
             result_kp2=json.load(f)
 
         std_lst = landmark_order_dict[category].copy()
@@ -415,8 +416,8 @@ def main(category,
 
         c_src_front, c_src_back = torch.from_numpy(c_src_front).unsqueeze(0), torch.from_numpy(c_src_back).unsqueeze(0)
 
-        mask_front = cv2.imread("inputs/maskfront_{0}.jpg".format(id), 0)
-        mask_back = cv2.imread("inputs/maskback_{0}.jpg".format(id), 0)
+        mask_front = cv2.imread("inputs/maskfront_{0}.jpg".format(int(id)), 0)
+        mask_back = cv2.imread("inputs/maskback_{0}.jpg".format(int(id)), 0)
         mask_front, mask_back = np.where(mask_front > 10, 255, 0), np.where(mask_back > 10, 255, 0)
         mask_front, mask_back = img_transform(mask_front).unsqueeze(0), img_transform(mask_back).unsqueeze(0)
         mask_front, mask_back = mask_front / 255., mask_back / 255.
