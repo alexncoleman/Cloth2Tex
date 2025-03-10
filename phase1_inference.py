@@ -173,6 +173,7 @@ class Trainer(object):
                 aaa = render_mask.unsqueeze(-1).detach().cpu().numpy() * 255.
                 bbb = masks[0].unsqueeze(-1).cpu().numpy() * 255.
                 ccc = inputs_front[0][0].unsqueeze(-1).cpu().numpy() * 255.
+                print(aaa.shape, bbb.shape, ccc.shape)
                 cv2.imwrite("experiments/{0}/iterative_{1}_step1_{2}.jpg".format(self.savedir, batch_id, i), cv2.hconcat([(aaa.astype(np.uint8)), bbb.astype(np.uint8), ccc.astype(np.uint8)]))
     
         
