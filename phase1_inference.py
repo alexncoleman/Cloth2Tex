@@ -171,7 +171,7 @@ class Trainer(object):
             
             if i % 200 == 0:
                 aaa = render_mask.unsqueeze(-1).detach().cpu().numpy() * 255.
-                aaa_resized = cv2.resize(aaa, (1280, 720))
+                aaa = cv2.resize(aaa, (1280, 720))
                 bbb = masks[0].unsqueeze(-1).cpu().numpy() * 255.
                 ccc = inputs_front[0][0].unsqueeze(-1).cpu().numpy() * 255.
                 print(aaa.shape, bbb.shape, ccc.shape)
