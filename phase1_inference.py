@@ -58,6 +58,7 @@ from torch_geometric.data import Data
 
 from psbody.mesh import Mesh
 from torch_geometric.io import read_ply
+from edit_json import update_json_coordinates
 
 
 class Trainer(object):
@@ -171,10 +172,8 @@ class Trainer(object):
             
             if i % 200 == 0:
                 aaa = render_mask.unsqueeze(-1).detach().cpu().numpy() * 255.
-                aaa = cv2.resize(aaa, (1280, 720))
                 bbb = masks[0].unsqueeze(-1).cpu().numpy() * 255.
                 ccc = inputs_front[0][0].unsqueeze(-1).cpu().numpy() * 255.
-                print(aaa.shape, bbb.shape, ccc.shape)
                 cv2.imwrite("experiments/{0}/iterative_{1}_step1_{2}.jpg".format(self.savedir, batch_id, i), cv2.hconcat([(aaa.astype(np.uint8)), bbb.astype(np.uint8), ccc.astype(np.uint8)]))
     
         
@@ -362,6 +361,18 @@ def main(category,
 
         H, W = ref_img.shape[:2]
         H1, W1 = ref_img_back.shape[:2]
+        print(H, W)
+        needed_resize = False
+        if H != 512 or W != 512:
+            needed_resize = True
+            # Need to resize image
+            ref_img = cv2.resize(ref_img, (512, 512, 1))
+            ref_img_back = cv2.resize(ref_img_back, (512, 512, 1))
+            # Update JSON coords
+            update_json_coordinates("inputs/kpfront_{0}.json".format(int(id)))
+            update_json_coordinates("inputs/kpback_{0}.json".format(int(id)))
+
+
 
         with open("inputs/kpfront_{0}.json".format(int(id))) as f:
             result_kp1=json.load(f)
@@ -420,6 +431,10 @@ def main(category,
 
         mask_front = cv2.imread("inputs/maskfront_{0}.jpg".format(int(id)), 0)
         mask_back = cv2.imread("inputs/maskback_{0}.jpg".format(int(id)), 0)
+        if needed_resize:
+            mask_front = cv2.resize(mask_front, (512, 512, 1))
+            mask_back = cv2.resize(mask_back, (512, 512, 1))
+
         mask_front, mask_back = np.where(mask_front > 10, 255, 0), np.where(mask_back > 10, 255, 0)
         mask_front, mask_back = img_transform(mask_front).unsqueeze(0), img_transform(mask_back).unsqueeze(0)
         mask_front, mask_back = mask_front / 255., mask_back / 255.
