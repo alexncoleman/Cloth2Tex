@@ -366,8 +366,8 @@ def main(category,
         if H != 512 or W != 512:
             needed_resize = True
             # Need to resize image
-            ref_img = cv2.resize(ref_img, (512, 512, 1))
-            ref_img_back = cv2.resize(ref_img_back, (512, 512, 1))
+            ref_img = cv2.resize(ref_img, (512, 512))
+            ref_img_back = cv2.resize(ref_img_back, (512, 512))
             # Update JSON coords
             update_json_coordinates("inputs/kpfront_{0}.json".format(int(id)))
             update_json_coordinates("inputs/kpback_{0}.json".format(int(id)))
@@ -432,8 +432,8 @@ def main(category,
         mask_front = cv2.imread("inputs/maskfront_{0}.jpg".format(int(id)), 0)
         mask_back = cv2.imread("inputs/maskback_{0}.jpg".format(int(id)), 0)
         if needed_resize:
-            mask_front = cv2.resize(mask_front, (512, 512, 1))
-            mask_back = cv2.resize(mask_back, (512, 512, 1))
+            mask_front = cv2.resize(mask_front, (512, 512))
+            mask_back = cv2.resize(mask_back, (512, 512))
 
         mask_front, mask_back = np.where(mask_front > 10, 255, 0), np.where(mask_back > 10, 255, 0)
         mask_front, mask_back = img_transform(mask_front).unsqueeze(0), img_transform(mask_back).unsqueeze(0)
