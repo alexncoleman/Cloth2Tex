@@ -105,6 +105,7 @@ class DeformGraphModel(torch.nn.Module):
             render_mask_out = self.binarization(render_mask)
             
             loss_dg = nn.MSELoss()(render_mask_out, masks) + 0.3 * mask_iou(render_mask_out, masks) # [2, 512, 512] [2, 512, 512]
+            print(torch.stack(specific_verts_2d).shape, landmarks_canon.shape)
             loss_kp = nn.MSELoss()(torch.stack(specific_verts_2d), landmarks_canon)
             edge_mask = edge_extraction(masks)[:, 0].float()
             edge_render_mask = edge_extraction(render_mask_out)[:, 0].float()
