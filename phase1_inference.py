@@ -360,17 +360,18 @@ def main(category,
         ref_img_back = cv2.imread("inputs/back_{0}.jpg".format(int(id)))
 
         H, W = ref_img.shape[:2]
-        H1, W1 = ref_img_back.shape[:2]
         print(H, W)
         needed_resize = False
         if H != 512 or W != 512:
             needed_resize = True
             # Need to resize image
+            ref_img = cv2.rotate(ref_img, cv2.ROTATE_90_COUNTERCLOCKWISE)
             ref_img = cv2.resize(ref_img, (512, 512))
+            ref_img_back = cv2.rotate(ref_img_back, cv2.ROTATE_90_COUNTERCLOCKWISE)
             ref_img_back = cv2.resize(ref_img_back, (512, 512))
             # Update JSON coords
-            update_json_coordinates("inputs/kpfront_{0}.json".format(int(id)))
-            update_json_coordinates("inputs/kpback_{0}.json".format(int(id)))
+            update_json_coordinates("inputs/kpfront_{0}.json".format(int(id)), rotate = True)
+            update_json_coordinates("inputs/kpback_{0}.json".format(int(id)), rotate = True)
 
 
 
