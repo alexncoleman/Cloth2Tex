@@ -360,7 +360,7 @@ def main(category,
         ref_img_back = cv2.imread("inputs/back_{0}.jpg".format(int(id)))
 
         H, W = ref_img.shape[:2]
-        print(H, W)
+        # print(H, W)
         needed_resize = False
         if H != 512 or W != 512:
             needed_resize = True
@@ -375,10 +375,10 @@ def main(category,
 
 
 
-        with open("inputs/kpfront_{0}.json".format(int(id))) as f:
+        with open("updated_kpfront_{0}.json".format(int(id))) as f:
             result_kp1=json.load(f)
 
-        with open("inputs/kpback_{0}.json".format(int(id))) as f:
+        with open("updated_kpback_{0}.json".format(int(id))) as f:
             result_kp2=json.load(f)
 
         std_lst = landmark_order_dict[category].copy()
@@ -433,12 +433,13 @@ def main(category,
         mask_front = cv2.imread("inputs/maskfront_{0}.jpg".format(int(id)), 0)
         mask_back = cv2.imread("inputs/maskback_{0}.jpg".format(int(id)), 0)
         if needed_resize:
+            # Rotate masks as well as image rotated
+            mask_front = cv2.rotate(mask_front, cv2.ROTATE_90_COUNTERCLOCKWISE)
             mask_front = cv2.resize(mask_front, (512, 512))
+            mask_back = cv2.rotate(mask_back, cv2.ROTATE_90_COUNTERCLOCKWISE)
             mask_back = cv2.resize(mask_back, (512, 512))
 
-        # Rotate the masks 90 degrees anticlockwise
-        mask_front = cv2.rotate(mask_front, cv2.ROTATE_90_COUNTERCLOCKWISE)
-        mask_back = cv2.rotate(mask_back, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        
 
         mask_front, mask_back = np.where(mask_front > 10, 255, 0), np.where(mask_back > 10, 255, 0)
         mask_front, mask_back = img_transform(mask_front).unsqueeze(0), img_transform(mask_back).unsqueeze(0)
