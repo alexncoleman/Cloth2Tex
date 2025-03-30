@@ -4,11 +4,15 @@ import os
 def resize_coordinates(x, y, original_shape, new_shape, rotate=False):
     """Rescale and optionally rotate coordinates from original image size to new image size."""
     if rotate:
-        # Rotate 90 degrees counterclockwise before scaling
-        x, y = y, original_shape[1] - x
-
-    scale_x = new_shape[1] / original_shape[1]
-    scale_y = new_shape[0] / original_shape[0]
+        # Rotate 90 degrees counterclockwise before scaling:
+        # Mapping: (x, y) -> (y, original_width - x)
+        x, y = y, original_shape[1] - x  
+        # Now, note that after rotation, the width becomes original_shape[0] and height becomes original_shape[1]
+        scale_x = new_shape[1] / original_shape[0]
+        scale_y = new_shape[0] / original_shape[1]
+    else:
+        scale_x = new_shape[1] / original_shape[1]
+        scale_y = new_shape[0] / original_shape[0]
     return round(x * scale_x, 2), round(y * scale_y, 2)
 
 def update_json_coordinates(json_path, new_shape=(512, 512), rotate = False):
