@@ -87,6 +87,18 @@
       "mask": null
     },
     {
+      "label": "mn",
+      "points": [
+        [
+          762,
+          310
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "point",
+      "flags": {}
+    },
+    {
       "label": "rso",
       "points": [
         [
